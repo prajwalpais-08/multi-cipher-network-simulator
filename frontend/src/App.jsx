@@ -14,7 +14,6 @@ function App() {
 
   const [error, setError] = useState("");
 
-
   // =====================================================
   // START SIMULATION
   // =====================================================
@@ -26,7 +25,7 @@ function App() {
 
     try {
       const response = await fetch(
-       "https://multi-cipher-network-simulator.onrender.com/api/simulate",
+        "https://multi-cipher-network-simulator.onrender.com/api/simulate",
         {
           method: "POST",
 
@@ -137,6 +136,10 @@ function App() {
                 RSA-2048 (Asymmetric Encryption)
               </option>
 
+              <option value="SHA-256">
+                SHA-256 (Cryptographic Hash)
+              </option>
+
             </select>
 
           </div>
@@ -224,8 +227,11 @@ function App() {
 
                 {result ? (
                   <>
+
                     <strong>
-                      ENCRYPTION SUCCESSFUL
+                      {result.algorithm === "SHA-256"
+                        ? "HASH GENERATED"
+                        : "ENCRYPTION SUCCESSFUL"}
                     </strong>
 
                     <br />
@@ -264,6 +270,7 @@ function App() {
                   </>
                 ) : (
                   <>
+
                     PLAINTEXT
 
                     <br />
@@ -275,6 +282,7 @@ function App() {
                     <br />
 
                     Waiting for simulation...
+
                   </>
                 )}
 
@@ -292,7 +300,9 @@ function App() {
               </div>
 
               <p>
-                Encrypted
+                {algorithm === "SHA-256"
+                  ? "Hash"
+                  : "Encrypted"}
                 <br />
                 Traffic
               </p>
@@ -325,6 +335,7 @@ function App() {
 
                 {result ? (
                   <>
+
                     <strong>
                       ⚠ ATTACKER INTERCEPTION
                     </strong>
@@ -333,7 +344,9 @@ function App() {
                     <br />
 
                     <strong>
-                      Captured Ciphertext:
+                      {result.algorithm === "SHA-256"
+                        ? "Captured Hash:"
+                        : "Captured Ciphertext:"}
                     </strong>
 
                     <br />
@@ -357,9 +370,11 @@ function App() {
                   </>
                 ) : (
                   <>
+
                     Monitoring network
                     <br />
                     traffic...
+
                   </>
                 )}
 
@@ -410,15 +425,20 @@ function App() {
 
                 {result ? (
                   <>
+
                     <strong>
-                      DECRYPTION SUCCESSFUL
+                      {result.algorithm === "SHA-256"
+                        ? "HASH RESULT"
+                        : "DECRYPTION SUCCESSFUL"}
                     </strong>
 
                     <br />
                     <br />
 
                     <strong>
-                      Recovered Message:
+                      {result.algorithm === "SHA-256"
+                        ? "Result:"
+                        : "Recovered Message:"}
                     </strong>
 
                     <br />
@@ -440,9 +460,11 @@ function App() {
                   </>
                 ) : (
                   <>
+
                     Waiting for
                     <br />
                     transmission...
+
                   </>
                 )}
 
@@ -505,8 +527,9 @@ function App() {
                 ● SUCCESS
               </p>
 
-              {result.algorithm} encryption and
-              decryption completed successfully.
+              {result.algorithm === "SHA-256"
+                ? "SHA-256 hash generated successfully."
+                : `${result.algorithm} encryption and decryption completed successfully.`}
 
             </div>
 
@@ -555,7 +578,7 @@ function App() {
             <div className="metric-card">
 
               <h4>
-                Encryption Time
+                Encryption / Hash Time
               </h4>
 
               <p>
@@ -568,7 +591,7 @@ function App() {
             <div className="metric-card">
 
               <h4>
-                Decryption Time
+                Decryption / Processing Time
               </h4>
 
               <p>
@@ -594,7 +617,7 @@ function App() {
             <div className="metric-card">
 
               <h4>
-                Ciphertext Size
+                Ciphertext / Hash Size
               </h4>
 
               <p>
