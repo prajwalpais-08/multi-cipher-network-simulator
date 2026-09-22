@@ -1,4 +1,3 @@
-
 import os
 
 from flask import Flask, request, jsonify
@@ -40,6 +39,23 @@ RSA_PRIVATE_KEY = rsa.generate_private_key(
 )
 
 RSA_PUBLIC_KEY = RSA_PRIVATE_KEY.public_key()
+
+
+# ============================================================
+# SHA-256 HASHING
+# ============================================================
+
+def sha256_hash(message):
+
+    digest = hashes.Hash(
+        hashes.SHA256()
+    )
+
+    digest.update(
+        message.encode("utf-8")
+    )
+
+    return digest.finalize().hex()
 
 
 # ============================================================
@@ -191,7 +207,8 @@ def home():
         "supportedAlgorithms": [
             "Fernet",
             "AES-256",
-            "RSA-2048"
+            "RSA-2048",
+            "SHA-256"
         ]
     })
 
@@ -238,7 +255,7 @@ def simulate():
 
 
         # ====================================================
-        # ENCRYPTION
+        # ENCRYPTION / HASHING
         # ====================================================
 
         encryption_start = time.perf_counter()
@@ -269,6 +286,13 @@ def simulate():
             )
 
 
+        elif algorithm == "SHA-256":
+
+            ciphertext = sha256_hash(
+                plaintext
+            )
+
+
         else:
 
             return jsonify({
@@ -293,7 +317,7 @@ def simulate():
 
 
         # ====================================================
-        # DECRYPTION
+        # DECRYPTION / HASH VERIFICATION
         # ====================================================
 
         decryption_start = time.perf_counter()
@@ -322,6 +346,14 @@ def simulate():
 
             decrypted_message = rsa_decrypt(
                 ciphertext
+            )
+
+
+        elif algorithm == "SHA-256":
+
+            decrypted_message = (
+                "SHA-256 is a one-way hash. "
+                "The original message cannot be decrypted."
             )
 
 
@@ -375,7 +407,12 @@ def simulate():
                 "plaintext": plaintext,
 
                 "status": (
-                    f"{algorithm} encryption successful"
+                    f"{algorithm} "
+                    + (
+                        "hash generated successfully"
+                        if algorithm == "SHA-256"
+                        else "encryption successful"
+                    )
                 )
             },
 
@@ -387,6 +424,10 @@ def simulate():
                 "interceptedData": intercepted_data,
 
                 "status": (
+                    "Hash intercepted. "
+                    "Original message cannot be recovered."
+                    if algorithm == "SHA-256"
+                    else
                     "Ciphertext intercepted. "
                     "Plaintext remains protected."
                 )
@@ -400,7 +441,13 @@ def simulate():
                 "decryptedMessage": decrypted_message,
 
                 "status": (
-                    f"{algorithm} decryption successful"
+                    f"{algorithm} "
+                    + (
+                        "hash generated successfully. "
+                        "Original message cannot be recovered."
+                        if algorithm == "SHA-256"
+                        else "decryption successful"
+                    )
                 )
             }
 
