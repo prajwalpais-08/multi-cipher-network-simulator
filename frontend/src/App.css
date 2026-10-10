@@ -1,95 +1,11 @@
-/* =====================================================
-   GLOBAL
-===================================================== */
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  background: #f5f7fb;
-
-  color: #1e293b;
-}
-
 
 /* =====================================================
-   MAIN APP
+   PERFORMANCE ANALYTICS
 ===================================================== */
 
-.app {
-  min-height: 100vh;
-}
+.analytics-section {
+  margin-top: 35px;
 
-
-/* =====================================================
-   HEADER
-===================================================== */
-
-.header {
-  background: linear-gradient(
-    135deg,
-    #4c1d95,
-    #7c3aed
-  );
-
-  color: white;
-
-  padding: 35px 20px;
-
-  text-align: center;
-
-  box-shadow:
-    0 4px 15px
-    rgba(0, 0, 0, 0.15);
-}
-
-.header h1 {
-  margin: 0;
-
-  font-size: 32px;
-
-  font-weight: 700;
-}
-
-.header p {
-  margin-top: 10px;
-
-  font-size: 16px;
-
-  opacity: 0.9;
-}
-
-
-/* =====================================================
-   MAIN CONTAINER
-===================================================== */
-
-.main-container {
-  max-width: 1400px;
-
-  margin: auto;
-
-  padding: 30px;
-}
-
-
-/* =====================================================
-   INPUT SECTION
-===================================================== */
-
-.input-section {
   background: white;
 
   padding: 30px;
@@ -99,588 +15,67 @@ body {
   box-shadow:
     0 8px 30px
     rgba(0, 0, 0, 0.08);
-
-  margin-bottom: 25px;
-}
-
-.input-section h2 {
-  margin-top: 0;
-
-  color: #4c1d95;
-}
-
-.input-section > p {
-  color: #64748b;
-
-  line-height: 1.6;
-
-  margin-bottom: 22px;
 }
 
 
-/* =====================================================
-   ALGORITHM SELECTOR
-===================================================== */
+.analytics-heading {
+  display: flex;
 
-.algorithm-selector {
-  width: 100%;
+  justify-content: space-between;
+
+  align-items: center;
 
   margin-bottom: 20px;
 }
 
-.algorithm-selector label {
-  display: block;
 
-  margin-bottom: 8px;
-
-  font-size: 16px;
-
-  font-weight: bold;
+.analytics-heading h2 {
+  margin: 0;
 
   color: #4c1d95;
+
+  font-size: 24px;
 }
 
-.algorithm-selector select {
-  width: 100%;
 
-  padding: 14px 16px;
+.analytics-heading p {
+  margin-top: 7px;
 
-  font-size: 16px;
-
-  border:
-    2px solid #e2e8f0;
-
-  border-radius: 10px;
-
-  background: white;
-
-  color: #1e293b;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.algorithm-selector select:hover {
-  border-color: #7c3aed;
-}
-
-.algorithm-selector select:focus {
-  outline: none;
-
-  border-color: #7c3aed;
-
-  box-shadow:
-    0 0 0 4px
-    rgba(124, 58, 237, 0.12);
+  color: #64748b;
 }
 
 
 /* =====================================================
-   TEXTAREA
+   METRICS CARDS
 ===================================================== */
 
-textarea {
-  width: 100%;
+.analytics-section .metrics-container {
+  display: grid;
 
-  min-height: 120px;
+  grid-template-columns:
+    repeat(4, 1fr);
 
-  padding: 15px;
+  gap: 15px;
 
-  border:
-    2px solid #e2e8f0;
+  margin-top: 20px;
 
-  border-radius: 10px;
+  padding: 0;
 
-  font-size: 16px;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  resize: vertical;
-
-  transition: 0.2s;
-}
-
-textarea:focus {
-  outline: none;
-
-  border-color: #7c3aed;
-
-  box-shadow:
-    0 0 0 4px
-    rgba(124, 58, 237, 0.1);
-}
-
-
-/* =====================================================
-   SIMULATION BUTTON
-===================================================== */
-
-.simulate-button {
-  margin-top: 18px;
-
-  padding: 14px 28px;
-
-  border: none;
-
-  border-radius: 9px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #6d28d9,
-      #7c3aed
-    );
-
-  color: white;
-
-  font-size: 16px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.simulate-button:hover {
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 8px 18px
-    rgba(109, 40, 217, 0.3);
-}
-
-.simulate-button:disabled {
-  background: #94a3b8;
-
-  cursor: not-allowed;
-
-  transform: none;
+  background: transparent;
 
   box-shadow: none;
 }
 
 
-/* =====================================================
-   ALGORITHM BADGE
-===================================================== */
+.analytics-section .metric-card {
+  min-height: 110px;
 
-.algorithm-badge {
-  display: inline-block;
-
-  padding: 8px 18px;
-
-  margin-bottom: 20px;
-
-  border-radius: 25px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #6d28d9,
-      #9333ea
-    );
-
-  color: white;
-
-  font-size: 14px;
-
-  font-weight: bold;
-
-  box-shadow:
-    0 4px 12px
-    rgba(109, 40, 217, 0.2);
-}
-
-
-/* =====================================================
-   NETWORK SECTION
-===================================================== */
-
-.network-section {
-  background: white;
-
-  padding: 30px;
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 8px 30px
-    rgba(0, 0, 0, 0.08);
-}
-
-.network-section > h2 {
-  text-align: center;
-
-  margin-top: 0;
-
-  margin-bottom: 5px;
-
-  color: #4c1d95;
-}
-
-.topology-description {
-  text-align: center;
-
-  color: #64748b;
-
-  margin-bottom: 30px;
-}
-
-
-/* =====================================================
-   NETWORK CONTAINER
-===================================================== */
-
-.network-container {
-  display: flex;
-
-  justify-content: center;
-
-  align-items: stretch;
-
-  gap: 20px;
-}
-
-
-/* =====================================================
-   DEVICE CARDS
-===================================================== */
-
-.device-card {
-  width: 340px;
-
-  min-height: 450px;
-
-  background: white;
-
-  padding: 25px;
-
-  border-radius: 16px;
-
-  text-align: center;
-
-  box-shadow:
-    0 8px 25px
-    rgba(0, 0, 0, 0.08);
-
-  transition:
-    transform 0.25s,
-    box-shadow 0.25s;
-}
-
-.device-card:hover {
-  transform:
-    translateY(-5px);
-
-  box-shadow:
-    0 12px 30px
-    rgba(0, 0, 0, 0.12);
-}
-
-
-/* =====================================================
-   DEVICE ICON
-===================================================== */
-
-.device-icon {
-  font-size: 45px;
-
-  margin-bottom: 10px;
-}
-
-
-/* =====================================================
-   DEVICE LABEL
-===================================================== */
-
-.device-label {
-  font-size: 13px;
-
-  font-weight: bold;
-
-  letter-spacing: 1px;
-
-  color: #64748b;
-
-  margin: 5px 0;
-}
-
-
-/* =====================================================
-   DEVICE TITLE
-===================================================== */
-
-.device-card h2 {
-  margin: 8px 0;
-
-  color: #1e293b;
-}
-
-
-/* =====================================================
-   DEVICE DESCRIPTION
-===================================================== */
-
-.device-description {
-  color: #64748b;
-
-  min-height: 40px;
-
-  line-height: 1.5;
-}
-
-
-/* =====================================================
-   DEVICE COLORS
-===================================================== */
-
-.sender {
-  border-top:
-    7px solid #7c3aed;
-}
-
-.attacker {
-  border-top:
-    7px solid #ef4444;
-}
-
-.receiver {
-  border-top:
-    7px solid #10b981;
-}
-
-
-/* =====================================================
-   DEVICE OUTPUT
-===================================================== */
-
-.device-output {
-  margin-top: 20px;
-
-  padding: 15px;
-
-  min-height: 220px;
-
-  background: #f8fafc;
-
-  border:
-    1px solid #e2e8f0;
-
-  border-radius: 10px;
-
-  text-align: left;
-
-  white-space: pre-wrap;
-
-  overflow-wrap: anywhere;
-
-  word-break: break-word;
-
-  font-family:
-    "Courier New",
-    monospace;
-
-  font-size: 12px;
-
-  line-height: 1.6;
-
-  color: #334155;
-
-  overflow-y: auto;
-
-  max-height: 320px;
-}
-
-
-/* =====================================================
-   CIPHERTEXT DISPLAY
-===================================================== */
-
-.ciphertext {
-  display: block;
-
-  padding: 10px;
-
-  background: #fff1f2;
-
-  border:
-    1px solid #fecdd3;
-
-  border-radius: 8px;
-
-  color: #b91c1c;
-
-  word-break: break-all;
-
-  font-size: 11px;
-}
-
-
-/* =====================================================
-   ARROWS
-===================================================== */
-
-.arrow-container {
   display: flex;
 
   flex-direction: column;
 
   justify-content: center;
 
-  align-items: center;
-
-  min-width: 85px;
-
-  color: #7c3aed;
-}
-
-.arrow {
-  font-size: 42px;
-
-  font-weight: bold;
-
-  margin-bottom: 5px;
-}
-
-.arrow-container p {
-  margin: 0;
-
-  color: #64748b;
-
-  font-size: 12px;
-
-  text-align: center;
-
-  line-height: 1.4;
-}
-
-
-/* =====================================================
-   STATUS SECTION
-===================================================== */
-
-.status-section {
-  margin-top: 35px;
-
-  background: white;
-
-  padding: 30px;
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 8px 30px
-    rgba(0, 0, 0, 0.08);
-}
-
-.status-section h2 {
-  margin-top: 0;
-
-  color: #4c1d95;
-}
-
-
-/* =====================================================
-   STATUS BOX
-===================================================== */
-
-.status-box {
-  background: #f5f3ff;
-
-  border-left:
-    5px solid #7c3aed;
-
-  padding: 20px;
-
-  border-radius: 8px;
-
-  color: #334155;
-
-  line-height: 1.5;
-}
-
-.status-box p {
-  margin-top: 0;
-
-  margin-bottom: 8px;
-
-  font-size: 13px;
-
-  font-weight: bold;
-
-  color: #6d28d9;
-}
-
-
-/* =====================================================
-   SUCCESS STATUS
-===================================================== */
-
-.success-status {
-  background: #ecfdf5;
-
-  border-left-color: #10b981;
-}
-
-.success-status p {
-  color: #059669;
-}
-
-
-/* =====================================================
-   ERROR STATUS
-===================================================== */
-
-.error-status {
-  background: #fef2f2;
-
-  border-left-color: #ef4444;
-}
-
-.error-status p {
-  color: #dc2626;
-}
-
-
-/* =====================================================
-   METRICS CONTAINER
-===================================================== */
-
-.metrics-container {
-  display: grid;
-
-  grid-template-columns:
-    repeat(5, 1fr);
-
-  gap: 15px;
-
-  margin-top: 35px;
-
-  padding: 25px;
-
-  background: white;
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 8px 30px
-    rgba(0, 0, 0, 0.08);
-}
-
-
-/* =====================================================
-   METRIC CARD
-===================================================== */
-
-.metric-card {
   padding: 20px;
 
   text-align: center;
@@ -702,7 +97,8 @@ textarea:focus {
     box-shadow 0.25s;
 }
 
-.metric-card:hover {
+
+.analytics-section .metric-card:hover {
   transform:
     translateY(-4px);
 
@@ -711,19 +107,25 @@ textarea:focus {
     rgba(124, 58, 237, 0.15);
 }
 
-.metric-card h4 {
+
+.analytics-section .metric-card h4 {
   margin:
     0 0 10px 0;
 
-  font-size: 13px;
+  font-size: 12px;
 
   color: #64748b;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
 }
 
-.metric-card p {
+
+.analytics-section .metric-card p {
   margin: 0;
 
-  font-size: 18px;
+  font-size: 20px;
 
   font-weight: bold;
 
@@ -734,128 +136,270 @@ textarea:focus {
 
 
 /* =====================================================
-   FOOTER
+   CHARTS
 ===================================================== */
 
-.footer {
-  margin-top: 50px;
+.charts-grid {
+  display: grid;
 
-  background: #1e1b4b;
+  grid-template-columns:
+    repeat(2, 1fr);
 
-  color: white;
+  gap: 20px;
 
-  text-align: center;
+  margin-top: 25px;
+}
 
-  padding: 20px;
 
-  font-size: 14px;
+.chart-card {
+  background: #ffffff;
+
+  border:
+    1px solid #e2e8f0;
+
+  border-radius: 14px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 4px 15px
+    rgba(0, 0, 0, 0.05);
+}
+
+
+.chart-card h3 {
+  margin:
+    0 0 5px 0;
+
+  color: #334155;
+
+  font-size: 18px;
+}
+
+
+.chart-description {
+  margin:
+    0 0 15px 0;
+
+  color: #64748b;
+
+  font-size: 13px;
 }
 
 
 /* =====================================================
-   TABLET RESPONSIVE
+   METRICS TABLE
 ===================================================== */
 
-@media (max-width: 1200px) {
+.metrics-table-section {
+  margin-top: 30px;
 
-  .network-container {
-    flex-wrap: wrap;
-  }
+  background: white;
 
-  .device-card {
-    width: 42%;
-  }
+  border:
+    1px solid #e2e8f0;
 
-  .arrow-container {
-    min-width: 60px;
-  }
+  border-radius: 14px;
 
-  .metrics-container {
+  overflow: hidden;
+
+  box-shadow:
+    0 4px 15px
+    rgba(0, 0, 0, 0.05);
+}
+
+
+.table-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 22px;
+
+  border-bottom:
+    1px solid #e2e8f0;
+}
+
+
+.table-header h3 {
+  margin: 0;
+
+  color: #334155;
+
+  font-size: 20px;
+}
+
+
+.table-header p {
+  margin:
+    6px 0 0 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+
+.simulation-count {
+  display: inline-block;
+
+  padding: 7px 12px;
+
+  border-radius: 20px;
+
+  background: #f5f3ff;
+
+  color: #6d28d9;
+
+  font-size: 13px;
+
+  font-weight: bold;
+}
+
+
+/* =====================================================
+   TABLE WRAPPER
+===================================================== */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+
+.metrics-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 900px;
+}
+
+
+.metrics-table th {
+  padding: 15px;
+
+  text-align: left;
+
+  background: #f8fafc;
+
+  color: #475569;
+
+  font-size: 12px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+
+  border-bottom:
+    1px solid #e2e8f0;
+
+  white-space: nowrap;
+}
+
+
+.metrics-table td {
+  padding: 15px;
+
+  color: #475569;
+
+  font-size: 13px;
+
+  border-bottom:
+    1px solid #f1f5f9;
+
+  white-space: nowrap;
+}
+
+
+.metrics-table tbody tr {
+  transition:
+    background 0.2s;
+}
+
+
+.metrics-table tbody tr:hover {
+  background: #faf5ff;
+}
+
+
+.metrics-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* =====================================================
+   ALGORITHM BADGE IN TABLE
+===================================================== */
+
+.algorithm-name {
+  display: inline-block;
+
+  padding: 6px 10px;
+
+  border-radius: 7px;
+
+  background: #f5f3ff;
+
+  color: #6d28d9;
+
+  font-weight: bold;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   RESPONSIVE ANALYTICS
+===================================================== */
+
+@media (max-width: 1100px) {
+
+  .analytics-section .metrics-container {
     grid-template-columns:
-      repeat(3, 1fr);
+      repeat(2, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
   }
 
 }
 
-
-/* =====================================================
-   MOBILE RESPONSIVE
-===================================================== */
 
 @media (max-width: 700px) {
 
-  .header {
-    padding: 28px 15px;
-  }
-
-  .header h1 {
-    font-size: 24px;
-  }
-
-  .header p {
-    font-size: 14px;
-  }
-
-  .main-container {
-    padding: 15px;
-  }
-
-  .input-section {
+  .analytics-section {
     padding: 20px;
   }
 
-  .network-section {
-    padding: 20px;
+  .analytics-section .metrics-container {
+    grid-template-columns:
+      1fr 1fr;
   }
 
-  .network-container {
+  .table-header {
     flex-direction: column;
 
-    align-items: center;
-  }
+    align-items: flex-start;
 
-  .device-card {
-    width: 100%;
-  }
-
-  .arrow-container {
-    height: 50px;
-
-    transform:
-      rotate(90deg);
-  }
-
-  .arrow-container p {
-    display: none;
-  }
-
-  .metrics-container {
-    grid-template-columns:
-      repeat(2, 1fr);
-
-    padding: 15px;
+    gap: 12px;
   }
 
 }
 
 
-/* =====================================================
-   SMALL MOBILE
-===================================================== */
-
 @media (max-width: 450px) {
 
-  .metrics-container {
-    grid-template-columns:
-      1fr;
+  .analytics-section .metrics-container {
+    grid-template-columns: 1fr;
   }
 
-  .header h1 {
-    font-size: 21px;
-  }
-
-  .simulate-button {
-    width: 100%;
+  .chart-card {
+    padding: 15px;
   }
 
 }
