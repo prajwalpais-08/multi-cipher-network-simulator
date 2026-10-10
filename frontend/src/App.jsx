@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   BarChart,
@@ -22,12 +21,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Stores every completed simulation
+  // Stores previous simulations for graphs and table
   const [simulationHistory, setSimulationHistory] = useState([]);
-
-  // =====================================================
-  // START SIMULATION
-  // =====================================================
 
   const startSimulation = async () => {
     setLoading(true);
@@ -57,154 +52,70 @@ function App() {
 
       setResult(data);
 
-      // =================================================
-      // SAVE METRICS TO HISTORY
-      // =================================================
-
-      const metrics = data.metrics;
-
-      const encryptionTime = Number(
-        metrics.encryptionTimeMs || 0
-      );
-
-      const decryptionTime = Number(
-        metrics.decryptionTimeMs || 0
-      );
-
-      const plaintextSize = Number(
-        metrics.plaintextLength || 0
-      );
-
-      const ciphertextSize = Number(
-        metrics.ciphertextLength || 0
-      );
-
-      const totalTime =
-        encryptionTime + decryptionTime;
-
-      const sizeOverhead =
-        plaintextSize > 0
-          ? (
-              ((ciphertextSize - plaintextSize) /
-                plaintextSize) *
-              100
-            ).toFixed(2)
-          : 0;
-
-      const throughput =
-        totalTime > 0
-          ? (
-              plaintextSize /
-              (totalTime / 1000)
-            ).toFixed(2)
-          : 0;
-
-      const historyEntry = {
+      // Add simulation to history
+      const historyItem = {
         id: Date.now(),
         algorithm: data.algorithm,
-        encryptionTime,
-        decryptionTime,
-        plaintextSize,
-        ciphertextSize,
-        totalTime,
-        sizeOverhead: Number(sizeOverhead),
-        throughput: Number(throughput),
+        encryptionTime: Number(data.metrics?.encryptionTimeMs || 0),
+        decryptionTime: Number(data.metrics?.decryptionTimeMs || 0),
+        plaintextLength: Number(data.metrics?.plaintextLength || 0),
+        ciphertextLength: Number(data.metrics?.ciphertextLength || 0),
       };
 
       setSimulationHistory((previous) => [
         ...previous,
-        historyEntry,
+        historyItem,
       ]);
     } catch (err) {
       console.error(err);
 
       setError(
-        err.message ||
-          "Failed to connect to backend"
+        err.message || "Failed to connect to backend"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // =====================================================
-  // CURRENT METRICS
-  // =====================================================
+  // Latest 10 simulations for charts
+  const chartHistory = simulationHistory.slice(-10);
 
-  const currentMetrics = result?.metrics
-    ? {
-        encryptionTime: Number(
-          result.metrics.encryptionTimeMs || 0
-        ),
+  const timeChartData = chartHistory.map((item, index) => ({
+    name: `${item.algorithm} ${index + 1}`,
+    Encryption: item.encryptionTime,
+    Decryption: item.decryptionTime,
+  }));
 
-        decryptionTime: Number(
-          result.metrics.decryptionTimeMs || 0
-        ),
+  const sizeChartData = chartHistory.map((item, index) => ({
+    name: `${item.algorithm} ${index + 1}`,
+    Plaintext: item.plaintextLength,
+    "Ciphertext / Hash": item.ciphertextLength,
+  }));
 
-        plaintextSize: Number(
-          result.metrics.plaintextLength || 0
-        ),
-
-        ciphertextSize: Number(
-          result.metrics.ciphertextLength || 0
-        ),
-      }
-    : null;
-
-  const totalProcessingTime = currentMetrics
-    ? (
-        currentMetrics.encryptionTime +
-        currentMetrics.decryptionTime
-      ).toFixed(3)
-    : 0;
-
-  const currentOverhead =
-    currentMetrics &&
-    currentMetrics.plaintextSize > 0
-      ? (
-          ((currentMetrics.ciphertextSize -
-            currentMetrics.plaintextSize) /
-            currentMetrics.plaintextSize) *
-          100
-        ).toFixed(2)
-      : 0;
-
-  const currentThroughput =
-    currentMetrics &&
-    totalProcessingTime > 0
-      ? (
-          currentMetrics.plaintextSize /
-          (Number(totalProcessingTime) / 1000)
-        ).toFixed(2)
-      : 0;
-
-  // =====================================================
-  // CHART DATA
-  // =====================================================
-
-  const timeChartData = simulationHistory.map(
-    (item) => ({
-      algorithm: item.algorithm,
-      encryption: item.encryptionTime,
-      decryption: item.decryptionTime,
-    })
+  const totalEncryptionTime = simulationHistory.reduce(
+    (total, item) => total + item.encryptionTime,
+    0
   );
 
-  const sizeChartData = simulationHistory.map(
-    (item) => ({
-      algorithm: item.algorithm,
-      plaintext: item.plaintextSize,
-      ciphertext: item.ciphertextSize,
-    })
+  const totalDecryptionTime = simulationHistory.reduce(
+    (total, item) => total + item.decryptionTime,
+    0
   );
+
+  const averageEncryptionTime =
+    simulationHistory.length > 0
+      ? totalEncryptionTime / simulationHistory.length
+      : 0;
+
+  const averageDecryptionTime =
+    simulationHistory.length > 0
+      ? totalDecryptionTime / simulationHistory.length
+      : 0;
 
   return (
     <div className="app">
 
-      {/* ================================================= */}
       {/* HEADER */}
-      {/* ================================================= */}
-
       <header className="header">
         <h1>
           Interactive Multi-Cipher Network Simulator
@@ -217,10 +128,7 @@ function App() {
 
       <main className="main-container">
 
-        {/* ================================================= */}
         {/* INPUT SECTION */}
-        {/* ================================================= */}
-
         <section className="input-section">
 
           <h2>
@@ -285,18 +193,12 @@ function App() {
 
         </section>
 
-        {/* ================================================= */}
         {/* ACTIVE ALGORITHM */}
-        {/* ================================================= */}
-
         <div className="algorithm-badge">
           Active Cipher: {algorithm}
         </div>
 
-        {/* ================================================= */}
         {/* NETWORK TOPOLOGY */}
-        {/* ================================================= */}
-
         <section className="network-section">
 
           <h2>
@@ -310,7 +212,6 @@ function App() {
           <div className="network-container">
 
             {/* DEVICE A */}
-
             <div className="device-card sender">
 
               <div className="device-icon">
@@ -348,7 +249,7 @@ function App() {
 
                     <br />
 
-                    {result.deviceA.plaintext}
+                    {result.deviceA?.plaintext}
 
                     <br />
                     <br />
@@ -370,7 +271,7 @@ function App() {
 
                     <br />
 
-                    {result.deviceA.status}
+                    {result.deviceA?.status}
                   </>
                 ) : (
                   <>
@@ -391,8 +292,7 @@ function App() {
               </div>
             </div>
 
-            {/* ARROW */}
-
+            {/* ARROW 1 */}
             <div className="arrow-container">
 
               <div className="arrow">
@@ -410,7 +310,6 @@ function App() {
             </div>
 
             {/* DEVICE C */}
-
             <div className="device-card attacker">
 
               <div className="device-icon">
@@ -450,7 +349,7 @@ function App() {
                     <br />
 
                     <span className="ciphertext">
-                      {result.deviceC.interceptedData}
+                      {result.deviceC?.interceptedData}
                     </span>
 
                     <br />
@@ -462,7 +361,7 @@ function App() {
 
                     <br />
 
-                    {result.deviceC.status}
+                    {result.deviceC?.status}
                   </>
                 ) : (
                   <>
@@ -475,8 +374,7 @@ function App() {
               </div>
             </div>
 
-            {/* ARROW */}
-
+            {/* ARROW 2 */}
             <div className="arrow-container">
 
               <div className="arrow">
@@ -492,7 +390,6 @@ function App() {
             </div>
 
             {/* DEVICE B */}
-
             <div className="device-card receiver">
 
               <div className="device-icon">
@@ -533,7 +430,7 @@ function App() {
                     <br />
                     <br />
 
-                    {result.deviceB.decryptedMessage}
+                    {result.deviceB?.decryptedMessage}
 
                     <br />
                     <br />
@@ -544,7 +441,7 @@ function App() {
 
                     <br />
 
-                    {result.deviceB.status}
+                    {result.deviceB?.status}
                   </>
                 ) : (
                   <>
@@ -560,10 +457,7 @@ function App() {
           </div>
         </section>
 
-        {/* ================================================= */}
         {/* SIMULATION STATUS */}
-        {/* ================================================= */}
-
         <section className="status-section">
 
           <h2>
@@ -586,190 +480,168 @@ function App() {
 
           {result && (
             <div className="status-box success-status">
-
-              <p>
-                ● SUCCESS
-              </p>
+              <p>● SUCCESS</p>
 
               {result.algorithm === "SHA-256"
                 ? "SHA-256 hash generated successfully."
                 : `${result.algorithm} encryption and decryption completed successfully.`}
-
             </div>
           )}
 
           {error && (
             <div className="status-box error-status">
-
-              <p>
-                ● ERROR
-              </p>
-
+              <p>● ERROR</p>
               {error}
-
             </div>
           )}
 
         </section>
 
-        {/* ================================================= */}
-        {/* CURRENT PERFORMANCE METRICS */}
-        {/* ================================================= */}
-
+        {/* CURRENT METRICS */}
         {result && result.metrics && (
+          <section className="metrics-container">
 
+            <div className="metric-card">
+              <h4>Algorithm</h4>
+              <p>{result.algorithm}</p>
+            </div>
+
+            <div className="metric-card">
+              <h4>Encryption / Hash Time</h4>
+              <p>
+                {result.metrics.encryptionTimeMs} ms
+              </p>
+            </div>
+
+            <div className="metric-card">
+              <h4>Decryption / Processing Time</h4>
+              <p>
+                {result.metrics.decryptionTimeMs} ms
+              </p>
+            </div>
+
+            <div className="metric-card">
+              <h4>Plaintext Size</h4>
+              <p>
+                {result.metrics.plaintextLength} bytes
+              </p>
+            </div>
+
+            <div className="metric-card">
+              <h4>Ciphertext / Hash Size</h4>
+              <p>
+                {result.metrics.ciphertextLength} bytes
+              </p>
+            </div>
+
+          </section>
+        )}
+
+        {/* PERFORMANCE ANALYTICS */}
+        {simulationHistory.length > 0 && (
           <section className="analytics-section">
 
-            <div className="analytics-heading">
-
+            <div className="analytics-header">
               <div>
                 <h2>
                   Performance Analytics
                 </h2>
 
                 <p>
-                  Detailed performance measurements for the
-                  current {result.algorithm} simulation.
+                  Comparison of encryption performance,
+                  processing time and data size across simulations.
                 </p>
+              </div>
+
+              <div className="simulation-count">
+                {simulationHistory.length} Simulation
+                {simulationHistory.length !== 1 ? "s" : ""}
+              </div>
+            </div>
+
+            {/* SUMMARY CARDS */}
+            <div className="analytics-summary">
+
+              <div className="summary-card">
+                <span>
+                  Simulations
+                </span>
+
+                <strong>
+                  {simulationHistory.length}
+                </strong>
+              </div>
+
+              <div className="summary-card">
+                <span>
+                  Avg. Encryption Time
+                </span>
+
+                <strong>
+                  {averageEncryptionTime.toFixed(4)} ms
+                </strong>
+              </div>
+
+              <div className="summary-card">
+                <span>
+                  Avg. Decryption Time
+                </span>
+
+                <strong>
+                  {averageDecryptionTime.toFixed(4)} ms
+                </strong>
+              </div>
+
+              <div className="summary-card">
+                <span>
+                  Current Algorithm
+                </span>
+
+                <strong>
+                  {algorithm}
+                </strong>
               </div>
 
             </div>
 
-            {/* KPI CARDS */}
-
-            <div className="metrics-container">
-
-              <div className="metric-card">
-
-                <h4>
-                  Algorithm
-                </h4>
-
-                <p>
-                  {result.algorithm}
-                </p>
-
-              </div>
-
-              <div className="metric-card">
-
-                <h4>
-                  Encryption / Hash Time
-                </h4>
-
-                <p>
-                  {currentMetrics.encryptionTime.toFixed(3)} ms
-                </p>
-
-              </div>
-
-              <div className="metric-card">
-
-                <h4>
-                  Decryption / Processing
-                </h4>
-
-                <p>
-                  {currentMetrics.decryptionTime.toFixed(3)} ms
-                </p>
-
-              </div>
-
-              <div className="metric-card">
-
-                <h4>
-                  Total Processing Time
-                </h4>
-
-                <p>
-                  {totalProcessingTime} ms
-                </p>
-
-              </div>
-
-              <div className="metric-card">
-
-                <h4>
-                  Plaintext Size
-                </h4>
-
-                <p>
-                  {currentMetrics.plaintextSize} bytes
-                </p>
-
-              </div>
-
-              <div className="metric-card">
-
-                <h4>
-                  Ciphertext / Hash Size
-                </h4>
-
-                <p>
-                  {currentMetrics.ciphertextSize} bytes
-                </p>
-
-              </div>
-
-              <div className="metric-card">
-
-                <h4>
-                  Size Overhead
-                </h4>
-
-                <p>
-                  {currentOverhead}%
-                </p>
-
-              </div>
-
-              <div className="metric-card">
-
-                <h4>
-                  Throughput
-                </h4>
-
-                <p>
-                  {currentThroughput} bytes/s
-                </p>
-
-              </div>
-
-            </div>
-
-            {/* ================================================= */}
             {/* CHARTS */}
-            {/* ================================================= */}
+            <div className="charts-grid">
 
-            {simulationHistory.length > 0 && (
+              {/* TIME CHART */}
+              <div className="chart-card">
 
-              <div className="charts-grid">
-
-                {/* TIME CHART */}
-
-                <div className="chart-card">
-
+                <div className="chart-title">
                   <h3>
                     Encryption vs Decryption Time
                   </h3>
 
-                  <p className="chart-description">
-                    Processing time comparison across
-                    completed simulations.
+                  <p>
+                    Processing time in milliseconds
                   </p>
+                </div>
+
+                <div className="chart-wrapper">
 
                   <ResponsiveContainer
                     width="100%"
-                    height={320}
+                    height="100%"
                   >
-                    <BarChart data={timeChartData}>
-
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                      />
+                    <BarChart
+                      data={timeChartData}
+                      margin={{
+                        top: 20,
+                        right: 20,
+                        left: 0,
+                        bottom: 50,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
 
                       <XAxis
-                        dataKey="algorithm"
+                        dataKey="name"
+                        angle={-25}
+                        textAnchor="end"
+                        interval={0}
                       />
 
                       <YAxis
@@ -785,47 +657,57 @@ function App() {
                       <Legend />
 
                       <Bar
-                        dataKey="encryption"
-                        name="Encryption / Hash"
+                        dataKey="Encryption"
                         fill="#7c3aed"
+                        radius={[5, 5, 0, 0]}
                       />
 
                       <Bar
-                        dataKey="decryption"
-                        name="Decryption / Processing"
+                        dataKey="Decryption"
                         fill="#10b981"
+                        radius={[5, 5, 0, 0]}
                       />
-
                     </BarChart>
                   </ResponsiveContainer>
 
                 </div>
+              </div>
 
-                {/* SIZE CHART */}
+              {/* SIZE CHART */}
+              <div className="chart-card">
 
-                <div className="chart-card">
-
+                <div className="chart-title">
                   <h3>
                     Message Size Comparison
                   </h3>
 
-                  <p className="chart-description">
-                    Plaintext size compared with encrypted
-                    or hashed output size.
+                  <p>
+                    Plaintext and encrypted/hash data size
                   </p>
+                </div>
+
+                <div className="chart-wrapper">
 
                   <ResponsiveContainer
                     width="100%"
-                    height={320}
+                    height="100%"
                   >
-                    <BarChart data={sizeChartData}>
-
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                      />
+                    <BarChart
+                      data={sizeChartData}
+                      margin={{
+                        top: 20,
+                        right: 20,
+                        left: 0,
+                        bottom: 50,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
 
                       <XAxis
-                        dataKey="algorithm"
+                        dataKey="name"
+                        angle={-25}
+                        textAnchor="end"
+                        interval={0}
                       />
 
                       <YAxis
@@ -841,51 +723,35 @@ function App() {
                       <Legend />
 
                       <Bar
-                        dataKey="plaintext"
-                        name="Plaintext"
-                        fill="#64748b"
+                        dataKey="Plaintext"
+                        fill="#3b82f6"
+                        radius={[5, 5, 0, 0]}
                       />
 
                       <Bar
-                        dataKey="ciphertext"
-                        name="Ciphertext / Hash"
+                        dataKey="Ciphertext / Hash"
                         fill="#ef4444"
+                        radius={[5, 5, 0, 0]}
                       />
-
                     </BarChart>
                   </ResponsiveContainer>
 
                 </div>
-
               </div>
-            )}
 
-            {/* ================================================= */}
-            {/* METRICS TABLE */}
-            {/* ================================================= */}
+            </div>
 
+            {/* DETAILED METRICS TABLE */}
             <div className="metrics-table-section">
 
-              <div className="table-header">
+              <div className="chart-title">
+                <h3>
+                  Detailed Performance Metrics
+                </h3>
 
-                <div>
-                  <h3>
-                    Detailed Metrics
-                  </h3>
-
-                  <p>
-                    Performance comparison of all algorithms
-                    tested during this session.
-                  </p>
-                </div>
-
-                <span className="simulation-count">
-                  {simulationHistory.length} simulation
-                  {simulationHistory.length !== 1
-                    ? "s"
-                    : ""}
-                </span>
-
+                <p>
+                  Complete record of all executed simulations
+                </p>
               </div>
 
               <div className="table-wrapper">
@@ -893,69 +759,61 @@ function App() {
                 <table className="metrics-table">
 
                   <thead>
-
                     <tr>
+                      <th>#</th>
                       <th>Algorithm</th>
-                      <th>Encryption</th>
-                      <th>Decryption</th>
-                      <th>Total Time</th>
+                      <th>Encryption / Hash</th>
+                      <th>Decryption / Processing</th>
                       <th>Plaintext</th>
-                      <th>Ciphertext</th>
-                      <th>Overhead</th>
-                      <th>Throughput</th>
+                      <th>Ciphertext / Hash</th>
+                      <th>Total Time</th>
                     </tr>
-
                   </thead>
 
                   <tbody>
 
-                    {simulationHistory.map(
-                      (item) => (
+                    {simulationHistory.map((item, index) => {
+
+                      const totalTime =
+                        item.encryptionTime +
+                        item.decryptionTime;
+
+                      return (
                         <tr key={item.id}>
 
                           <td>
-                            <span className="algorithm-name">
+                            {index + 1}
+                          </td>
+
+                          <td>
+                            <span className="algorithm-tag">
                               {item.algorithm}
                             </span>
                           </td>
 
                           <td>
-                            {item.encryptionTime.toFixed(3)}
-                            {" ms"}
+                            {item.encryptionTime.toFixed(4)} ms
                           </td>
 
                           <td>
-                            {item.decryptionTime.toFixed(3)}
-                            {" ms"}
+                            {item.decryptionTime.toFixed(4)} ms
                           </td>
 
                           <td>
-                            {item.totalTime.toFixed(3)}
-                            {" ms"}
+                            {item.plaintextLength} bytes
                           </td>
 
                           <td>
-                            {item.plaintextSize}
-                            {" bytes"}
+                            {item.ciphertextLength} bytes
                           </td>
 
-                          <td>
-                            {item.ciphertextSize}
-                            {" bytes"}
-                          </td>
-
-                          <td>
-                            {item.sizeOverhead}%
-                          </td>
-
-                          <td>
-                            {item.throughput}
-                            {" B/s"}
+                          <td className="total-time">
+                            {totalTime.toFixed(4)} ms
                           </td>
 
                         </tr>
-                      )
-                    )}
+                      );
+                    })}
 
                   </tbody>
 
@@ -969,10 +827,6 @@ function App() {
         )}
 
       </main>
-
-      {/* ================================================= */}
-      {/* FOOTER */}
-      {/* ================================================= */}
 
       <footer className="footer">
         PBL Project • Cryptography & Network Security
