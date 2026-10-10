@@ -1,4 +1,4 @@
-```jsx
+
 import { useState } from "react";
 import {
   BarChart,
@@ -983,4 +983,3 @@ function App() {
 }
 
 export default App;
-```
