@@ -88,6 +88,20 @@ def sha256_hash(message):
 
 
 # ============================================================
+# SHA3-256
+# ============================================================
+
+def sha3_256_hash(message):
+    digest = hashes.Hash(hashes.SHA3_256())
+
+    digest.update(
+        message.encode("utf-8")
+    )
+
+    return digest.finalize().hex()
+
+
+# ============================================================
 # AES-256 ENCRYPTION
 # ============================================================
 
@@ -480,7 +494,8 @@ def home():
             "RSA-2048",
             "ElGamal",
             "Caesar Cipher",
-            "SHA-256"
+            "SHA-256",
+            "SHA3-256"
         ]
     })
 
@@ -605,7 +620,9 @@ def simulate():
 
             "Fernet": "Fernet",
             "ElGamal": "ElGamal",
-            "SHA-256": "SHA-256"
+            "SHA-256": "SHA-256",
+            "SHA3": "SHA3-256",
+            "SHA3-256": "SHA3-256"
         }
 
         if algorithm not in algorithm_aliases:
@@ -696,6 +713,16 @@ def simulate():
         elif algorithm == "SHA-256":
 
             ciphertext = sha256_hash(
+                plaintext
+            )
+
+        # ----------------------------------------------------
+        # SHA3-256
+        # ----------------------------------------------------
+
+        elif algorithm == "SHA3-256":
+
+            ciphertext = sha3_256_hash(
                 plaintext
             )
 
@@ -792,10 +819,10 @@ def simulate():
         # SHA-256
         # ----------------------------------------------------
 
-        elif algorithm == "SHA-256":
+        elif algorithm in ["SHA-256", "SHA3-256"]:
 
             decrypted_message = (
-                "SHA-256 is a one-way hash. "
+                f"{algorithm} is a one-way hash. "
                 "The original message cannot be decrypted."
             )
 
@@ -844,6 +871,10 @@ def simulate():
 
             algorithm_type = "Classical Cipher"
 
+        elif algorithm in ["SHA-256", "SHA3-256"]:
+
+            algorithm_type = "Cryptographic Hash"
+
         else:
 
             algorithm_type = "Cryptographic Hash"
@@ -852,10 +883,10 @@ def simulate():
         # DEVICE A - SENDER
         # ====================================================
 
-        if algorithm == "SHA-256":
+        if algorithm in ["SHA-256", "SHA3-256"]:
 
             sender_status = (
-                "SHA-256 hash generated successfully."
+                f"{algorithm} hash generated successfully."
             )
 
         else:
@@ -868,10 +899,10 @@ def simulate():
         # DEVICE C - ATTACKER
         # ====================================================
 
-        if algorithm == "SHA-256":
+        if algorithm in ["SHA-256", "SHA3-256"]:
 
             attacker_status = (
-                "Hash intercepted. "
+                f"{algorithm} hash intercepted. "
                 "Original message cannot be recovered "
                 "through decryption."
             )
@@ -916,10 +947,10 @@ def simulate():
         # DEVICE B - RECEIVER
         # ====================================================
 
-        if algorithm == "SHA-256":
+        if algorithm in ["SHA-256", "SHA3-256"]:
 
             receiver_status = (
-                "SHA-256 hash generated successfully. "
+                f"{algorithm} hash generated successfully. "
                 "Original message cannot be recovered."
             )
 
@@ -1027,4 +1058,3 @@ if __name__ == "__main__":
         port=port,
         debug=False
     )
-
