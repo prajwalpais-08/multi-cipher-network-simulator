@@ -247,7 +247,7 @@ function App() {
   // HELPER VALUES
   // =====================================================
 
-  const isHash = algorithm === "SHA-256";
+  const isHash = algorithm === "SHA-256" || algorithm === "SHA3-256";
 
   const isDES = algorithm === "DES";
 
@@ -277,6 +277,9 @@ function App() {
 
       case "SHA-256":
         return "One-way cryptographic hash function";
+
+      case "SHA3-256":
+        return "SHA3-256 one-way cryptographic hash function";
 
       default:
         return "Cryptographic algorithm";
@@ -358,6 +361,10 @@ function App() {
 
               <option value="SHA-256">
                 SHA-256 (Cryptographic Hash)
+              </option>
+
+              <option value="SHA3-256">
+                SHA3-256 (Cryptographic Hash)
               </option>
             </select>
 
@@ -448,11 +455,11 @@ function App() {
             <div className="algorithm-parameter">
 
               <label>
-                SHA-256 Information
+                {algorithm} Information
               </label>
 
               <div className="parameter-info">
-                SHA-256 is a one-way hash function.
+                {algorithm} is a one-way hash function.
                 It does not perform decryption.
               </div>
 
@@ -539,7 +546,7 @@ function App() {
                 {result ? (
                   <>
                     <strong>
-                      {result.algorithm === "SHA-256"
+                      {isHash
                         ? "HASH GENERATED"
                         : "ENCRYPTION SUCCESSFUL"}
                     </strong>
@@ -682,7 +689,7 @@ function App() {
                     <br />
 
                     <strong>
-                      {result.algorithm === "SHA-256"
+                      {isHash
                         ? "Captured Hash:"
                         : "Captured Ciphertext:"}
                     </strong>
@@ -764,7 +771,7 @@ function App() {
                 {result ? (
                   <>
                     <strong>
-                      {result.algorithm === "SHA-256"
+                      {isHash
                         ? "HASH RESULT"
                         : "DECRYPTION SUCCESSFUL"}
                     </strong>
@@ -773,7 +780,7 @@ function App() {
                     <br />
 
                     <strong>
-                      {result.algorithm === "SHA-256"
+                      {isHash
                         ? "Result:"
                         : "Recovered Message:"}
                     </strong>
@@ -853,8 +860,8 @@ function App() {
                 ● SUCCESS
               </p>
 
-              {result.algorithm === "SHA-256"
-                ? "SHA-256 hash generated successfully."
+              {isHash
+                ? `${result.algorithm} hash generated successfully.`
                 : `${result.algorithm} encryption and decryption completed successfully.`}
 
             </div>
